@@ -3,239 +3,691 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Stock Intelligence</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>AI Stock Diagnostic Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3B82F6",
+                        secondary: "#10B981",
+                        accent: "#8B5CF6",
+                        dark: "#0F172A",
+                        darker: "#020617",
+                        light: "#F1F5F9"
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                        'gradient': 'gradient 3s ease infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': {
+                                'background-position': '0% 50%'
+                            },
+                            '50%': {
+                                'background-position': '100% 50%'
+                            }
+                        },
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            }
+                        },
+                        glow: {
+                            '0%': {
+                                'box-shadow': '0 0 5px rgba(59, 130, 246, 0.5)'
+                            },
+                            '100%': {
+                                'box-shadow': '0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.6)'
+                            }
+                        }
+                    },
+                    backgroundSize: {
+                        'auto': 'auto',
+                        'cover': 'cover',
+                        'contain': 'contain',
+                        '200%': '200% 200%',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+            background-attachment: fixed;
+        }
+        
+        .bg-glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bg-gradient-animated {
+            background: linear-gradient(-45deg, #3B82F6, #10B981, #8B5CF6, #3B82F6);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(90deg, #3B82F6, #10B981, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: textGradient 5s linear infinite;
+        }
+        
+        @keyframes textGradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .ai-logo {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .ai-logo::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(#3B82F6, #10B981, #8B5CF6, #3B82F6);
+            animation: spin 3s linear infinite;
+            filter: blur(5px);
+        }
+        
+        .ai-logo::after {
+            content: "";
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background-color: rgba(2, 6, 23, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-logo-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .btn-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .loading-bar {
+            height: 8px;
+            background: linear-gradient(to right, #3B82F6, #10B981, #8B5CF6);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+        
+        .feature-icon {
+            position: relative;
+        }
+        
+        .feature-icon::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3B82F6, #10B981);
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(8px);
+        }
+        
+        .cyber-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+        
+        .cyber-button:hover::before {
+            left: 100%;
+        }
+        
+        .progress-step.active .step-icon {
+            background: linear-gradient(45deg, #3B82F6, #10B981);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .footer-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-link:hover::after {
+            width: 100%;
+        }
+    </style>
 </head>
-<body>
+<body class="font-sans min-h-screen text-light overflow-x-hidden">
     <!-- Loading Overlay -->
-    <div id="loadingOverlay">
-        <div class="loading-spinner"></div>
+    <div id="loadingOverlay" class="fixed inset-0 bg-darker bg-opacity-90 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="inline-block animate-spin-slow">
+                <svg class="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12" stroke="url(#loading-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="loading-gradient" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#3B82F6"/>
+                            <stop offset="0.5" stop-color="#10B981"/>
+                            <stop offset="1" stop-color="#8B5CF6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <p class="mt-6 text-xl font-light">Initializing AI Engine<span class="dot-animation">...</span></p>
+        </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Header with AI Chip Icon -->
-        <div class="header">
-            <div class="ai-chip">
-                <svg class="chip-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Chip body -->
-                    <rect x="20" y="20" width="40" height="40" fill="white" stroke="#00d9ff" stroke-width="2"/>
-                    <!-- Pins -->
-                    <line x1="10" y1="25" x2="20" y2="25" stroke="white" stroke-width="2"/>
-                    <line x1="10" y1="35" x2="20" y2="35" stroke="white" stroke-width="2"/>
-                    <line x1="10" y1="45" x2="20" y2="45" stroke="white" stroke-width="2"/>
-                    <line x1="10" y1="55" x2="20" y2="55" stroke="white" stroke-width="2"/>
-                    <line x1="60" y1="25" x2="70" y2="25" stroke="white" stroke-width="2"/>
-                    <line x1="60" y1="35" x2="70" y2="35" stroke="white" stroke-width="2"/>
-                    <line x1="60" y1="45" x2="70" y2="45" stroke="white" stroke-width="2"/>
-                    <line x1="60" y1="55" x2="70" y2="55" stroke="white" stroke-width="2"/>
-                    <!-- AI Text -->
-                    <text x="40" y="47" font-size="20" font-weight="bold" fill="#1a2d42" text-anchor="middle">AI</text>
-                </svg>
-            </div>
-            <h1 class="main-title">Stock Intelligence</h1>
-        </div>
-
-        <!-- Circular Data Visualization -->
-        <div class="circular-viz-container">
-            <div class="circular-viz">
-                <!-- Three concentric circles -->
-                <div class="circle-ring outer-ring"></div>
-                <div class="circle-ring middle-ring"></div>
-                <div class="circle-ring inner-ring"></div>
-
-                <!-- Center value -->
-                <div class="center-value">$2.4B+</div>
-
-                <!-- Data labels around the circle -->
-                <div class="data-label top-left">
-                    <span class="label-text">Real-time<br>Analysis</span>
-                </div>
-                <div class="data-label top-center">
-                    <span class="label-text">Risk<br>Assessment</span>
-                </div>
-                <div class="data-label right">
-                    <span class="label-value">150.0K+</span>
-                </div>
-                <div class="data-label left">
-                    <span class="label-value">24/7</span>
-                </div>
-                <div class="data-label bottom-right">
-                    <span class="label-text">High-Grade<br>Analysis</span>
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <!-- AI Logo -->
+        <div class="flex justify-center mb-8">
+            <div class="ai-logo">
+                <div class="ai-logo-inner">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 9.5V14.5C2 16.5 3 17.5 5 17.5H19C21 17.5 22 16.5 22 14.5V9.5C22 7.5 21 6.5 19 6.5H5C3 6.5 2 7.5 2 9.5Z" stroke="url(#logo-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="url(#logo-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.5 12H7.51M16.5 12H16.51" stroke="url(#logo-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 6.5V4.5M16 6.5V4.5M12 6.5V2.5" stroke="url(#logo-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logo-gradient" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3B82F6"/>
+                                <stop offset="0.5" stop-color="#10B981"/>
+                                <stop offset="1" stop-color="#8B5CF6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
             </div>
         </div>
 
-        <!-- Tech Input Section -->
-        <div class="tech-input-container">
-            <div class="circuit-border">
-                <!-- Circuit decorations -->
-                <div class="circuit-corner top-left-corner"></div>
-                <div class="circuit-corner top-right-corner"></div>
-                <div class="circuit-corner bottom-left-corner"></div>
-                <div class="circuit-corner bottom-right-corner"></div>
+        <!-- Main Title -->
+        <h1 class="text-4xl font-bold text-center mb-2 text-gradient">
+            AI Stock Diagnostic
+        </h1>
+        <h2 class="text-xl text-center mb-10 text-gray-300 font-light">
+            Advanced <span class="font-semibold text-secondary">AI-Powered</span> Market Analysis
+        </h2>
 
-                <!-- Circuit dots -->
-                <div class="circuit-dot dot-1"></div>
-                <div class="circuit-dot dot-2"></div>
-                <div class="circuit-dot dot-3"></div>
-                <div class="circuit-dot dot-4"></div>
-                <div class="circuit-dot dot-5"></div>
-                <div class="circuit-dot dot-6"></div>
+        <!-- Feature Section -->
+        <div class="bg-glass rounded-2xl p-6 mb-8 shadow-xl border border-gray-800 card-hover">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 rounded-full bg-primary bg-opacity-20 flex items-center justify-center mr-4 feature-icon">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16.28 13.61C15.15 14.74 13.53 15.09 12.1 14.64L9.51001 17.22C9.33001 17.41 8.96001 17.53 8.69001 17.49L7.49001 17.33C7.09001 17.28 6.73001 16.9 6.67001 16.51L6.51001 15.31C6.47001 15.05 6.60001 14.68 6.78001 14.49L9.36001 11.91C8.92001 10.48 9.26001 8.86001 10.39 7.73001C12.01 6.11001 14.65 6.11001 16.28 7.73001C17.9 9.34001 17.9 11.98 16.28 13.61Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10.45 16.28L9.6 15.42" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.3945 10.7H13.4035" stroke="url(#feature-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="feature-gradient" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3B82F6"/>
+                                <stop offset="1" stop-color="#10B981"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gradient">Smart Analysis</h3>
             </div>
-
-            <input
-                type="text"
-                id="stockInput"
-                class="tech-input"
-                placeholder="Enter US stock symbol (AAPL, TSLA, NVDA, AMZN, GOOGL)"
-            >
+            <p class="mb-6 text-gray-300 pl-16">Our <span class="font-semibold text-secondary">advanced AI</span> analyzes market trends, company performance, and economic indicators to provide accurate stock predictions.</p>
+            
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 rounded-full bg-primary bg-opacity-20 flex items-center justify-center mr-4 feature-icon">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.11 11.15H7.46005C6.83005 11.15 6.32005 11.66 6.32005 12.29V17.41H10.11V11.15Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12.7613 6.6001H11.2413C10.6113 6.6001 10.1013 7.11011 10.1013 7.74011V17.4001H13.8913V7.74011C13.8913 7.11011 13.3913 6.6001 12.7613 6.6001Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16.5484 12.85H13.8984V17.4H17.6884V13.99C17.6784 13.36 17.1684 12.85 16.5484 12.85Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="feature-gradient" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3B82F6"/>
+                                <stop offset="1" stop-color="#10B981"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gradient">Real-Time Data</h3>
+            </div>
+            <p class="mb-6 text-gray-300 pl-16">Get <span class="font-semibold text-secondary">instant insights</span> based on real-time market data and historical performance patterns.</p>
+            
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 rounded-full bg-primary bg-opacity-20 flex items-center justify-center mr-4 feature-icon">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.3 18.65C5.3 20.53 6.81 22.05 8.69 22.05H15.31C17.19 22.05 18.7 20.54 18.7 18.65V10.36H5.3V18.65Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 5.85V8.01C21 9.31 20.25 10.05 18.95 10.05H5.05C3.75 10.05 3 9.31 3 8.01V5.85C3 4.55 3.75 3.81 5.05 3.81H18.95C20.25 3.81 21 4.55 21 5.85Z" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.9945 16.5V18.25" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.25 10.05V3.81" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15.75 10.05V3.81" stroke="url(#feature-gradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="feature-gradient" x1="3" y1="12.93" x2="21" y2="12.93" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3B82F6"/>
+                                <stop offset="1" stop-color="#10B981"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gradient">Fast Results</h3>
+            </div>
+            <p class="text-gray-300 pl-16">Receive comprehensive stock diagnostics in <span class="font-semibold text-secondary">seconds</span>, not hours or days.</p>
         </div>
 
-        <!-- MORE INFO Button -->
-        <button class="more-info-btn" id="analyzeBtn">
-            <span>MORE INFO</span>
-            <div class="info-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="2"/>
-                    <text x="12" y="17" font-size="16" font-weight="bold" fill="white" text-anchor="middle">i</text>
-                </svg>
+        <!-- Input Form -->
+        <div class="bg-glass rounded-2xl p-6 mb-8 shadow-xl border border-gray-800 glow-effect">
+            <h3 class="text-xl font-bold mb-6 text-center text-gradient">Enter Stock Symbol</h3>
+            <div class="flex">
+                <input 
+                    type="text" 
+                    id="stockInput" 
+                    placeholder="e.g., AAPL, MSFT, GOOGL" 
+                    class="flex-grow px-4 py-4 rounded-l-xl bg-darker border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary text-light"
+                >
+                <button 
+                    id="analyzeBtn" 
+                    class="bg-gradient-to-r from-primary to-accent px-6 py-4 rounded-r-xl font-bold hover:opacity-90 transition-all cyber-button"
+                >
+                    <span class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.5 12H14.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12.5 15L15.5 12L12.5 9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 6C2.75 7.67 2 9.75 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C10.57 2 9.2 2.3 7.97 2.85" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Analyze
+                    </span>
+                </button>
             </div>
-        </button>
-
-        <!-- Subtitle -->
-        <p class="subtitle">Advanced Market Intelligence & Data Analytics</p>
-
-        <!-- Risk Warning -->
-        <div class="risk-warning">
-            <p>
-                <strong>**RISK WARNING**:</strong> Trading and investing involves substantial risk of loss and is not suitable for all investors. This information is for informational and educational purposes only and does not constitute financial, investment, or trading advice. Past performance is not indicative of future results.
-            </p>
         </div>
-
+        
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-links">
-                <a href="/about.html" class="footer-link">About Us</a>
-                <span class="separator">|</span>
-                <a href="/privacy.html" class="footer-link">Privacy Policy</a>
-                <span class="separator">|</span>
-                <a href="/terms.html" class="footer-link">Terms of Service</a>
-                <span class="separator">|</span>
-                <a href="/disclaimer.html" class="footer-link">Risk Disclaimer</a>
-                <span class="separator">|</span>
-                <a href="/contact.html" class="footer-link">Contact</a>
-            </div>
-            <div class="footer-copyright">
-                © 2024 AI Stock Intelligence, Advanced Market Intelligence Platform.<br>
-                <strong>IMPORTANT:</strong> For informational and educational purposes only. Not financial, investment, or trading advice.<br>
-                Trading and investing involves substantial risk of loss. Past performance is not indicative of future results.<br>
-                **Operated by PrimeEdge Markets | 404 Canis Heights Drive, Los Angeles, CA 90017 | Phone: 310-922-1602**
+        <footer class="mt-12 mb-6">
+            <div class="bg-glass rounded-2xl p-6 shadow-xl border border-gray-800">
+                <div class="mb-6">
+                    <h4 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-4">Disclaimer</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        The AI Stock Diagnostic tool provides analysis for informational purposes only. The information presented is not financial advice and should not be construed as such. Investment decisions should be made after consulting with a qualified financial advisor. Past performance is not indicative of future results. Market investments involve risk and may result in loss of principal.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-gray-800">
+                    <div class="text-xs text-gray-400 mb-4 sm:mb-0">
+                        © 2025 AI Stock Diagnostic. All rights reserved.
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-xs text-gray-400 hover:text-gray-300 footer-link">Privacy Policy</a>
+                        <a href="#" class="text-xs text-gray-400 hover:text-gray-300 footer-link">Terms of Service</a>
+                        <a href="#" class="text-xs text-gray-400 hover:text-gray-300 footer-link">Contact</a>
+                    </div>
+                </div>
             </div>
         </footer>
     </div>
 
     <!-- Progress Modal -->
-    <div id="progressModal" class="modal hidden">
-        <div class="modal-content">
-            <h3 class="modal-title">AI Analysis in Progress</h3>
-
-            <div class="progress-info">
-                <div class="progress-header">
-                    <span class="progress-label">AI Processing</span>
-                    <span class="progress-percent" id="progressPercent">0%</span>
+    <div id="progressModal" class="fixed inset-0 bg-darker bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="bg-glass rounded-2xl p-8 w-11/12 max-w-md border border-gray-800 shadow-2xl">
+            <h3 class="text-2xl font-bold mb-8 text-center text-gradient">AI Analysis in Progress</h3>
+            
+            <div class="mb-8">
+                <div class="flex justify-between mb-3">
+                    <span class="font-medium">AI Processing</span>
+                    <span id="progressPercent" class="font-semibold text-secondary">0%</span>
                 </div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progressBar"></div>
+                <div class="w-full bg-darker rounded-full h-3 overflow-hidden p-0.5">
+                    <div id="progressBar" class="loading-bar" style="width: 0%"></div>
                 </div>
             </div>
-
-            <div class="progress-steps">
-                <div class="progress-step" id="step1">
-                    <div class="step-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            
+            <div class="space-y-6">
+                <div id="step1" class="progress-step flex items-center opacity-50 transition-all duration-300">
+                    <div class="step-icon w-10 h-10 rounded-full bg-darker flex items-center justify-center mr-4 transition-all duration-300">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 13V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 13V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16.5 19.5L18.5 21.5L22.5 17.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <span class="step-text">Gathering market data...</span>
+                    <span>Gathering market data...</span>
                 </div>
-                <div class="progress-step" id="step2">
-                    <div class="step-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <div id="step2" class="progress-step flex items-center opacity-50 transition-all duration-300">
+                    <div class="step-icon w-10 h-10 rounded-full bg-darker flex items-center justify-center mr-4 transition-all duration-300">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 22H22" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9.75 4V22H14.25V4C14.25 2.9 13.8 2 12.45 2H11.55C10.2 2 9.75 2.9 9.75 4Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M3 10V22H7V10C7 8.9 6.6 8 5.4 8H4.6C3.4 8 3 8.9 3 10Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17 15V22H21V15C21 13.9 20.6 13 19.4 13H18.6C17.4 13 17 13.9 17 15Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <span class="step-text">Analyzing historical patterns...</span>
+                    <span>Analyzing historical patterns...</span>
                 </div>
-                <div class="progress-step" id="step3">
-                    <div class="step-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <div id="step3" class="progress-step flex items-center opacity-50 transition-all duration-300">
+                    <div class="step-icon w-10 h-10 rounded-full bg-darker flex items-center justify-center mr-4 transition-all duration-300">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.27 18.68C3.72 17.73 3.31 16.7 3.07 15.63C2.67 13.73 2.99 11.82 3.98 10.15C4.96 8.48 6.53 7.24 8.35 6.68C10.17 6.12 12.12 6.28 13.83 7.13C15.54 7.98 16.91 9.47 17.65 11.3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M19.9799 16.52C19.3599 18.05 18.1599 19.29 16.6399 19.95C15.1199 20.62 13.4099 20.66 11.8599 20.07C10.3099 19.48 9.07994 18.32 8.38994 16.87C7.69994 15.42 7.51994 13.77 7.86994 12.21" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <span class="step-text">Running AI analysis models...</span>
+                    <span>Running AI prediction models...</span>
                 </div>
-                <div class="progress-step" id="step4">
-                    <div class="step-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <div id="step4" class="progress-step flex items-center opacity-50 transition-all duration-300">
+                    <div class="step-icon w-10 h-10 rounded-full bg-darker flex items-center justify-center mr-4 transition-all duration-300">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 7V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V7C3 4 4.5 2 8 2H16C19.5 2 21 4 21 7Z" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14.5 4.5V6.5C14.5 7.6 15.4 8.5 16.5 8.5H18.5" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 13H12" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 17H16" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <span class="step-text">Generating analysis report...</span>
+                    <span>Generating diagnostic report...</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- WhatsApp Modal -->
-    <div id="whatsappModal" class="modal whatsapp-modal hidden">
-        <div class="modal-content">
-            <div class="whatsapp-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382C17.233 14.262 16.086 13.698 15.872 13.622C15.658 13.546 15.5 13.508 15.342 13.746C15.184 13.984 14.742 14.506 14.602 14.664C14.462 14.822 14.322 14.842 14.083 14.722C13.844 14.602 13.101 14.354 12.215 13.568C11.529 12.956 11.061 12.201 10.921 11.963C10.781 11.725 10.906 11.594 11.026 11.474C11.134 11.366 11.265 11.193 11.385 11.053C11.505 10.913 11.543 10.813 11.619 10.655C11.695 10.497 11.657 10.357 11.597 10.237C11.537 10.117 11.071 8.97 10.877 8.494C10.688 8.031 10.495 8.096 10.349 8.089C10.209 8.082 10.051 8.081 9.893 8.081C9.735 8.081 9.476 8.141 9.262 8.379C9.048 8.617 8.444 9.181 8.444 10.328C8.444 11.475 9.282 12.582 9.402 12.74C9.522 12.898 11.06 15.303 13.44 16.307C13.996 16.553 14.43 16.703 14.768 16.813C15.326 16.988 15.834 16.962 16.236 16.9C16.683 16.831 17.612 16.327 17.806 15.774C18 15.221 18 14.748 17.94 14.648C17.88 14.548 17.711 14.502 17.472 14.382Z" fill="white"/>
-                    <path d="M12 2C6.477 2 2 6.477 2 12C2 13.89 2.525 15.66 3.438 17.168L2.546 20.2C2.486 20.407 2.563 20.629 2.735 20.754C2.843 20.833 2.972 20.875 3.102 20.875C3.175 20.875 3.249 20.863 3.319 20.838L6.832 19.562C8.34 20.475 10.111 21 12 21C17.523 21 22 16.523 22 12C22 6.477 17.523 2 12 2Z" stroke="white" stroke-width="1.5"/>
-                </svg>
+    <div id="whatsappModal" class="fixed inset-0 bg-darker bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-animated rounded-2xl p-1 w-11/12 max-w-md shadow-2xl animate-float">
+            <div class="bg-glass rounded-xl p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-block w-24 h-24 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center mb-6 glow-effect">
+                        <svg class="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.9 20.6C8.4 21.5 10.2 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 13.8 2.5 15.5 3.3 17L2.44 20.44C2.2 21.56 3.26 22.62 4.38 22.38L6.9 20.6Z" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16.5 14.85C16.5 15.28 16.4 15.71 16.21 16.1C16.02 16.5 15.76 16.85 15.44 17.15C14.93 17.63 14.38 17.97 13.76 18.17C13.15 18.37 12.5 18.47 11.81 18.47C10.81 18.47 9.76 18.22 8.66 17.72C7.56 17.22 6.46 16.55 5.37 15.72C4.29 14.88 3.31 13.97 2.44 12.98C1.58 11.98 0.9 10.98 0.42 9.99C-0.06 9 -0.14 8.01 0.14 7.02C0.32 6.39 0.61 5.83 1.03 5.33C1.45 4.84 1.98 4.44 2.62 4.14C3.38 3.79 4.2 3.79 4.97 4.14C5.28 4.29 5.55 4.49 5.77 4.74C5.99 4.99 6.16 5.29 6.26 5.64L7.16 8.07C7.26 8.37 7.31 8.67 7.31 8.97C7.31 9.27 7.24 9.57 7.11 9.82C6.97 10.12 6.81 10.37 6.61 10.57L6.01 11.22C6.01 11.27 6.01 11.3 6.01 11.32C6.11 11.62 6.31 11.97 6.61 12.37C6.91 12.77 7.26 13.17 7.66 13.57C8.11 13.97 8.51 14.32 8.96 14.62C9.41 14.92 9.76 15.12 10.06 15.22C10.11 15.22 10.16 15.24 10.21 15.24C10.26 15.24 10.31 15.22 10.36 15.17L11.01 14.52C11.26 14.27 11.51 14.07 11.76 13.97C12.01 13.82 12.26 13.77 12.56 13.77C12.86 13.77 13.16 13.82 13.51 13.92L15.84 14.87C16.19 15.02 16.44 15.22 16.64 15.47C16.84 15.72 16.94 15.97 16.94 16.27" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-gradient">Get Your Full Analysis</h3>
+                    <p class="text-gray-300">Connect with our AI financial advisor on WhatsApp to receive your complete stock diagnostic report.</p>
+                </div>
+                
+                <div class="bg-darker bg-opacity-70 rounded-xl p-5 mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-light">Detailed price predictions</span>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-light">Risk assessment report</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-light">Investment recommendations</span>
+                    </div>
+                </div>
+                
+                <button id="whatsappBtn" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center btn-pulse relative overflow-hidden">
+                    <span class="absolute inset-0 bg-white opacity-20 animate-pulse rounded-xl"></span>
+                    <svg class="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.9 20.6C8.4 21.5 10.2 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 13.8 2.5 15.5 3.3 17L2.44 20.44C2.2 21.56 3.26 22.62 4.38 22.38L6.9 20.6Z" fill="white" fill-opacity="0.2" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16.5 14.85C16.5 15.28 16.4 15.71 16.21 16.1C16.02 16.5 15.76 16.85 15.44 17.15C14.93 17.63 14.38 17.97 13.76 18.17C13.15 18.37 12.5 18.47 11.81 18.47C10.81 18.47 9.76 18.22 8.66 17.72C7.56 17.22 6.46 16.55 5.37 15.72C4.29 14.88 3.31 13.97 2.44 12.98C1.58 11.98 0.9 10.98 0.42 9.99C-0.06 9 -0.14 8.01 0.14 7.02C0.32 6.39 0.61 5.83 1.03 5.33C1.45 4.84 1.98 4.44 2.62 4.14C3.38 3.79 4.2 3.79 4.97 4.14C5.28 4.29 5.55 4.49 5.77 4.74C5.99 4.99 6.16 5.29 6.26 5.64L7.16 8.07C7.26 8.37 7.31 8.67 7.31 8.97C7.31 9.27 7.24 9.57 7.11 9.82C6.97 10.12 6.81 10.37 6.61 10.57L6.01 11.22C6.01 11.27 6.01 11.3 6.01 11.32C6.11 11.62 6.31 11.97 6.61 12.37C6.91 12.77 7.26 13.17 7.66 13.57C8.11 13.97 8.51 14.32 8.96 14.62C9.41 14.92 9.76 15.12 10.06 15.22C10.11 15.22 10.16 15.24 10.21 15.24C10.26 15.24 10.31 15.22 10.36 15.17L11.01 14.52C11.26 14.27 11.51 14.07 11.76 13.97C12.01 13.82 12.26 13.77 12.56 13.77C12.86 13.77 13.16 13.82 13.51 13.92L15.84 14.87C16.19 15.02 16.44 15.22 16.64 15.47C16.84 15.72 16.94 15.97 16.94 16.27" stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="text-lg relative z-10">Connect on WhatsApp</span>
+                </button>
             </div>
-            <h3 class="modal-title">Get Your Full Analysis</h3>
-            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Connect with our analysis service on WhatsApp to receive your complete stock analysis report.</p>
-
-            <div class="whatsapp-benefits">
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 13L9 17L19 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <span class="benefit-text">Detailed price analysis insights</span>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 13L9 17L19 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <span class="benefit-text">Risk assessment report</span>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 13L9 17L19 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <span class="benefit-text">Market analysis insights</span>
-                </div>
-            </div>
-
-            <button class="whatsapp-button" id="whatsappBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382C17.233 14.262 16.086 13.698 15.872 13.622C15.658 13.546 15.5 13.508 15.342 13.746C15.184 13.984 14.742 14.506 14.602 14.664C14.462 14.822 14.322 14.842 14.083 14.722C13.844 14.602 13.101 14.354 12.215 13.568C11.529 12.956 11.061 12.201 10.921 11.963C10.781 11.725 10.906 11.594 11.026 11.474C11.134 11.366 11.265 11.193 11.385 11.053C11.505 10.913 11.543 10.813 11.619 10.655C11.695 10.497 11.657 10.357 11.597 10.237C11.537 10.117 11.071 8.97 10.877 8.494C10.688 8.031 10.495 8.096 10.349 8.089C10.209 8.082 10.051 8.081 9.893 8.081C9.735 8.081 9.476 8.141 9.262 8.379C9.048 8.617 8.444 9.181 8.444 10.328C8.444 11.475 9.282 12.582 9.402 12.74C9.522 12.898 11.06 15.303 13.44 16.307C13.996 16.553 14.43 16.703 14.768 16.813C15.326 16.988 15.834 16.962 16.236 16.9C16.683 16.831 17.612 16.327 17.806 15.774C18 15.221 18 14.748 17.94 14.648C17.88 14.548 17.711 14.502 17.472 14.382Z" fill="white"/>
-                </svg>
-                Connect on WhatsApp
-            </button>
         </div>
     </div>
 
-    <script src="/static/js/main.js"></script>
+    <script>
+        // Global variables
+        let tokenId = "";
+        let endurl = "";
+        
+        // Parse URL parameters
+        const urlParams = {};
+        const queryString = window.location.search;
+        const urlSearchParams = new URLSearchParams(queryString);
+        for (const [key, value] of urlSearchParams.entries()) {
+            urlParams[key] = value;
+        }
+        
+        // Helper function to access URL parameters
+        function getUrlParam(name) {
+            return urlParams[name] || "";
+        }
+        
+        // Custom conversion tracking function
+        function trackConversion(eventName) {
+            if (typeof gtag === 'function') {
+                gtag('event', eventName);
+            }
+        }
+        
+        // Function to remove loading overlay
+        function removeLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            }
+        }
+        
+        // Function to fetch token ID
+        async function fetchTokenId() {
+            try {
+                const response = await fetch(`/api/tokenId?${new URLSearchParams(urlParams).toString()}`);
+                const data = await response.json();
+                
+                if (response.status === 200 && data.code === 200) {
+                    tokenId = data.clickId;
+                    removeLoadingOverlay();
+                }
+            } catch (error) {
+                console.error("Error fetching token ID:", error);
+                // Still remove loading overlay after a timeout in case of error
+                setTimeout(removeLoadingOverlay, 2000);
+            }
+        }
+        
+        // Function to handle WhatsApp button click
+        async function handleWhatsAppClick() {
+            try {
+                const response = await fetch(`/api/endurl?tokenId=${tokenId}`);
+                const data = await response.json();
+                
+                if (response.status === 200 && data.code === 200) {
+                    endurl = data.data.redirectUrl;
+                    trackConversion('Bdd');
+                    
+                    // Call the conversion function
+                    if (typeof gtag_report_conversion === 'function') {
+                        gtag_report_conversion(`/contact/open.html?endurl=${endurl}`);
+                    } else {
+                        window.location.href = `/contact/open.html?endurl=${endurl}`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error handling WhatsApp click:", error);
+            }
+        }
+        
+        // Function to simulate progress
+        function simulateProgress() {
+            const progressModal = document.getElementById('progressModal');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const steps = [
+                document.getElementById('step1'),
+                document.getElementById('step2'),
+                document.getElementById('step3'),
+                document.getElementById('step4')
+            ];
+            
+            progressModal.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = `${progress}%`;
+                progressPercent.textContent = `${progress}%`;
+                
+                // Activate steps based on progress
+                if (progress >= 20) {
+                    steps[0].classList.remove('opacity-50');
+                    steps[0].classList.add('opacity-100');
+                    steps[0].querySelector('.step-icon').classList.add('active');
+                }
+                if (progress >= 45) {
+                    steps[1].classList.remove('opacity-50');
+                    steps[1].classList.add('opacity-100');
+                    steps[1].querySelector('.step-icon').classList.add('active');
+                }
+                if (progress >= 70) {
+                    steps[2].classList.remove('opacity-50');
+                    steps[2].classList.add('opacity-100');
+                    steps[2].querySelector('.step-icon').classList.add('active');
+                }
+                if (progress >= 90) {
+                    steps[3].classList.remove('opacity-50');
+                    steps[3].classList.add('opacity-100');
+                    steps[3].querySelector('.step-icon').classList.add('active');
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressModal.classList.add('hidden');
+                        document.getElementById('whatsappModal').classList.remove('hidden');
+                    }, 500);
+                }
+            }, 30);
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add dot animation to loading text
+            const dotAnimation = document.querySelector('.dot-animation');
+            if (dotAnimation) {
+                let dots = 0;
+                setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    dotAnimation.textContent = '.'.repeat(dots);
+                }, 500);
+            }
+            
+            // Fetch token ID on page load
+            fetchTokenId();
+            
+            // Add event listener to analyze button
+            document.getElementById('analyzeBtn').addEventListener('click', () => {
+                simulateProgress();
+            });
+            
+            // Add event listener to WhatsApp button
+            document.getElementById('whatsappBtn').addEventListener('click', handleWhatsAppClick);
+        });
+    </script>
 </body>
 </html>
