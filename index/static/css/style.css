@@ -1,0 +1,239 @@
+/* Background Grid Pattern */
+.bg-grid-pattern {
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Data Dots Animation */
+.data-dots {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.data-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: rgba(76, 201, 240, 0.6);
+    border-radius: 50%;
+    left: var(--x);
+    top: var(--y);
+    opacity: 0;
+    animation: dataDotPulse 3s infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes dataDotPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Loading Animation */
+.stock-chart-loader {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        rgba(76, 201, 240, 0.3) 0%, 
+        rgba(67, 97, 238, 0.6) 50%, 
+        rgba(247, 37, 133, 0.9) 100%);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.chart-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #F72585;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    animation: chartPointMove 2s infinite ease-in-out;
+    box-shadow: 0 0 10px rgba(247, 37, 133, 0.7);
+}
+
+@keyframes chartPointMove {
+    0% {
+        left: 0;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+.loading-text {
+    display: inline-block;
+    animation: float 1.5s infinite ease-in-out alternate;
+    animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+.loading-text:nth-child(1) { --i: 1; }
+.loading-text:nth-child(2) { --i: 2; }
+.loading-text:nth-child(3) { --i: 3; }
+.loading-text:nth-child(4) { --i: 4; }
+.loading-text:nth-child(5) { --i: 5; }
+.loading-text:nth-child(6) { --i: 6; }
+.loading-text:nth-child(7) { --i: 7; }
+.loading-text:nth-child(8) { --i: 8; }
+.loading-text:nth-child(9) { --i: 9; }
+.loading-text:nth-child(10) { --i: 10; }
+.loading-text:nth-child(11) { --i: 11; }
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
+}
+
+/* AI Analysis Animation */
+.ai-analysis-animation {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.analysis-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 1px solid rgba(76, 201, 240, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulseCircle 2s infinite alternate;
+}
+
+.analysis-circle::before,
+.analysis-circle::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+}
+
+.analysis-circle::before {
+    width: 120px;
+    height: 120px;
+    border: 1px solid rgba(67, 97, 238, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulseCircle 2s infinite alternate 0.3s;
+}
+
+.analysis-circle::after {
+    width: 90px;
+    height: 90px;
+    border: 1px solid rgba(247, 37, 133, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulseCircle 2s infinite alternate 0.6s;
+}
+
+.analysis-grid {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-radius: 50%;
+    mask-image: radial-gradient(circle, black 70%, transparent 75%);
+    animation: rotateGrid 10s linear infinite;
+}
+
+.analysis-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #4CC9F0;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    box-shadow: 0 0 10px rgba(76, 201, 240, 0.7);
+    animation: moveDot 4s infinite;
+}
+
+.analysis-scan {
+    position: absolute;
+    width: 150px;
+    height: 75px;
+    border-top: 2px solid rgba(247, 37, 133, 0.5);
+    border-radius: 150px 150px 0 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center bottom;
+    animation: scanRotate 2s linear infinite;
+}
+
+@keyframes pulseCircle {
+    0% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes rotateGrid {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes moveDot {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(40px);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(40px);
+    }
+}
+
+@keyframes scanRotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

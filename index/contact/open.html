@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Opening WhatsApp, please wait...</title>
+		<style>
+			/* ...（保持原有的樣式代碼）... */
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				font-family: Arial, sans-serif;
+			}
+
+			body {
+				background: linear-gradient(90deg, #25D366, #128C7E);
+				background-size: cover;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				overflow: hidden;
+				color: #333;
+			}
+
+			#loadingIndicator,
+			#alertBox,
+			#actionButtons {
+				display: none;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				background: rgba(255, 255, 255, 0.9);
+				padding: 30px;
+				border-radius: 12px;
+				box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+				animation: fadeIn 0.5s ease-in-out;
+			}
+
+			#loadingIndicator {
+				display: flex;
+			}
+
+			.spinner {
+				width: 60px;
+				height: 60px;
+				border: 8px solid rgba(0, 0, 0, 0.1);
+				border-top: 8px solid #25d366;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+
+			.message {
+				margin-top: 20px;
+				font-size: 1.1em;
+				font-weight: 600;
+				color: #333;
+				text-align: center;
+			}
+
+			#alertBox {
+				background: #fff;
+				padding: 25px;
+				width: 80%;
+				max-width: 320px;
+				border: 1px solid #ddd;
+				border-radius: 10px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				text-align: center;
+			}
+
+			#alertBox p {
+				font-size: 1em;
+				margin-bottom: 15px;
+				line-height: 1.5;
+			}
+
+			#alertBox button,
+			.retryButton,
+			.actionButton {
+				margin-top: 10px;
+				padding: 10px 20px;
+				font-size: 1em;
+				color: #fff;
+				background-color: #25d366;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+			}
+
+			#alertBox button:hover,
+			.retryButton:hover,
+			.actionButton:hover {
+				background-color: #1e995c;
+			}
+
+			.retryButton {
+				background: none;
+				color: #128c7e;
+				text-decoration: underline;
+				font-size: 0.9em;
+				cursor: pointer;
+			}
+
+			#actionButtons {
+				display: none;
+				flex-direction: column;
+				gap: 15px;
+				align-items: center;
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="loadingIndicator">
+			<div class="spinner"></div>
+			<div class="message" id="countdownMessage">Opening WhatsApp, please wait...</div>
+		</div>
+
+		<div id="alertBox">
+			<p id="alertMessage">Unable to open WhatsApp. Please check your network connection or download the latest version of the WhatsApp app.</p>
+			<button onclick="window.location.href='https://www.whatsapp.com/download/'">Download the latest version of WhatsApp</button>
+			<div class="retryButton" onclick="retryFetch()">Try Again</div>
+		</div>
+
+		<div id="actionButtons">
+			<button class="actionButton" onclick="openLine()">Try Again</button>
+			<button class="actionButton" onclick="goToHomepage()">Open WhatsApp Now</button>
+		</div>
+
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				// 获取路径参数
+				const urlParams = new URLSearchParams(window.location.search);
+				const lineUrl = urlParams.get('endurl'); // 从查询参数中获取 redirectUrl
+
+				if (lineUrl) {
+					startCountdown(lineUrl);
+				} else {
+					const lineUrl = localStorage.getItem('lineUrl'); // 从 localStorage 中获取 redirectUrl
+					startCountdown(lineUrl);
+				}
+			});
+
+			function startCountdown(lineUrl) {
+				document.getElementById('countdownMessage').innerText = 'Opening WhatsApp, please wait...';
+				showLoadingIndicator();
+
+				setTimeout(function() {
+					window.location.href = lineUrl; // 跳转到目标 URL
+				}, 800);
+			}
+
+			function showLoadingIndicator() {
+				document.getElementById('loadingIndicator').style.display = 'flex';
+				document.getElementById('alertBox').style.display = 'none';
+				document.getElementById('actionButtons').style.display = 'none';
+			}
+
+			function showAlert(message) {
+				document.getElementById('alertBox').style.display = 'block';
+				document.getElementById('alertMessage').innerText = message;
+				document.getElementById('actionButtons').style.display = 'none';
+				document.getElementById('loadingIndicator').style.display = 'none';
+			}
+
+			function retryFetch() {
+				document.getElementById('alertBox').style.display = 'none';
+				var lineUrl = sessionStorage.getItem('lineUrl');
+
+				if (lineUrl) {
+					startCountdown(lineUrl);
+				} else {
+					showAlert('whatsapp link is not provided. Please try again.');
+				}
+			}
+
+			function openLine() {
+				var lineUrl = localStorage.getItem('lineUrl');
+
+				if (lineUrl) {
+					window.location.href = lineUrl;
+				} else {
+					showAlert('whatsapp link is not provided. Please try again。');
+				}
+			}
+
+			function goToHomepage() {
+				window.location.href = "/";
+			}
+		</script>
+	</body>
+</html>
